@@ -18,15 +18,15 @@ namespace MinVerTests.Packages
             var expected = Package.WithVersion(0, 0, 0, new[] { "alpha", "0" });
 
             // act
-            var (sdkActual, sdkOut) = await Sdk.BuildProject(path);
-            var (cliActual, cliErr) = await MinVerCli.Run(path);
+            var (actual, sdk) = await Sdk.BuildProject(path);
+            var cli = await MinVerCli.ReadAsync(path);
 
             // assert
-            Assert.Equal(expected, sdkActual);
-            Assert.Contains("No commits found", sdkOut, StringComparison.Ordinal);
+            Assert.Equal(expected, actual);
+            Assert.Contains("No commits found", sdk.Out, StringComparison.Ordinal);
 
-            Assert.Equal(expected.Version, cliActual);
-            Assert.Contains("No commits found", cliErr, StringComparison.Ordinal);
+            Assert.Equal(expected.Version, cli.Out.Trim());
+            Assert.Contains("No commits found", cli.Error, StringComparison.Ordinal);
         }
     }
 }
